@@ -1,0 +1,19 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 83b9fb1fc4431a142b8c3da6d45735b2, type: 3}
+  m_Name: Test Object Pool Data
+  m_EditorClassIdentifier: 
+  _objectPrefab: {fileID: 1721716507829601215, guid: 4db91863209a89a45814d044dc185fce, type: 3}
+  _initialCapacity: 10
+  _increaseAmount: 5
+  _maxCapacity: 20
+  _maxCapacityBehavior: 1
