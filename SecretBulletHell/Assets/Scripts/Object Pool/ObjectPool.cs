@@ -8,12 +8,13 @@ public class ObjectPool : MonoBehaviour
     [SerializeField] private ObjectPoolData _data;
     private PoolableObject _objectPrefab;
     private Stack<PoolableObject> _freeObjects;
+    private Transform _parent;
     private Stack<PoolableObject> _usedObjects;
     private int _initialCapacity;
-    private int _currentCapacity { get{return _freeObjects.Count + _usedObjects.Count;}} //The current size of the pool
+    private int CurrentCapacity { get{return _freeObjects.Count + _usedObjects.Count;}} //The current size of the pool
     private int _increaseAmount; //Determines how much to increase the pool size
     private int _maxCapacity; //The soft upper limit of how much the object pool size can increase to
-    private Behavior _maxCapacityBehavior; //Determines what happens when count == capacity during GetObject()
+    [SerializeField] private Behavior _maxCapacityBehavior; //Determines what happens when count == capacity during GetObject()
     public enum Behavior
     {
         Nothing = 0,
@@ -34,19 +35,21 @@ public class ObjectPool : MonoBehaviour
     //Create and populate the object pool
     public void CreatePool(Transform parent = null)
     {
+        _parent = parent;
         _freeObjects = new Stack<PoolableObject>();
         _usedObjects = new Stack<PoolableObject>();
         for(int i = 0; i < _initialCapacity; i++)
         {
             PoolableObject temp;
-            if(parent!= null)
+            if(_parent!= null)
             {
-                temp = Instantiate(_objectPrefab,parent);
+                temp = Instantiate(_objectPrefab,_parent);
             }
             else
             {
                 temp = Instantiate(_objectPrefab);
             }
+            temp.SetPool(this);
             _objectPrefab.gameObject.SetActive(false);
             _freeObjects.Push(temp);
         }
@@ -81,9 +84,10 @@ public class ObjectPool : MonoBehaviour
                     for(int i = 0; i < _increaseAmount; i++)
                     {
                         PoolableObject temp = Instantiate(_objectPrefab);
+                        temp.SetPool(this);
                         _freeObjects.Push(temp);
                     }
-                    if(_currentCapacity >= _maxCapacity)
+                    if(CurrentCapacity >= _maxCapacity)
                     {
                         _maxCapacityBehavior = Behavior.Kill;
                     }
@@ -99,6 +103,7 @@ public class ObjectPool : MonoBehaviour
 
     public void ReturnObjectToPool(PoolableObject poolableObject)
     {
+        poolableObject.transform.parent = _parent;
         _freeObjects.Push(poolableObject);
     }
 }
